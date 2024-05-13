@@ -17,11 +17,11 @@ SRC_URI = " \
 SRC_URI[md5sum] = "6533b71b31c19e548768f0fc963202f3"
 SRC_URI[sha256sum] = "92ba161921c5cdec5a8f8d5711676f0865b50cee071c25eb4bd4125b5af59fd0"
 
-S = "${WORKDIR}/SourceHanSansTW"
+S = "${UNPACKDIR}/SourceHanSansTW"
 
 do_install() {
     install -d ${D}${sysconfdir}/fonts/conf.d/
-    install -m 0644 ${WORKDIR}/44-source-han-sans-tw.conf ${D}${sysconfdir}/fonts/conf.d/
+    install -m 0644 ${UNPACKDIR}/44-source-han-sans-tw.conf ${D}${sysconfdir}/fonts/conf.d/
 
     install -d ${D}${datadir}/fonts/truetype/
     find ./ -name '*.otf' -exec install -m 0644 {} ${D}${datadir}/fonts/truetype/ \;
