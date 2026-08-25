@@ -21,7 +21,7 @@ LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://COPYING;md5=9aa91e13d644326bf281924212862184"
 
 DEPENDS = "openssl readline ncurses"
-SRCREV = "ab5ce5baff097ebb6e2a17a171858be213ee68d3"
+SRCREV = "bf774149ae7f74c12164a5b021b23520c5ca4016"
 SRC_URI = "git://codeberg.org/ipmitool/ipmitool;protocol=https;branch=master \
            ${IANA_ENTERPRISE_NUMBERS} \
            file://0001-csv-revision-Drop-the-git-revision-info.patch \
@@ -35,7 +35,6 @@ IANA_ENTERPRISE_NUMBERS ?= ""
 #IANA_ENTERPRISE_NUMBERS = "http://www.iana.org/assignments/enterprise-numbers.txt;name=iana-enterprise-numbers;downloadfilename=iana-enterprise-numbers"
 #SRC_URI[iana-enterprise-numbers.sha256sum] = "cdd97fc08325667434b805eb589104ae63f7a9eb720ecea73cb55110b383934c"
 
-S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig
 

@@ -9,9 +9,9 @@ LIC_FILES_CHKSUM = "file://LICENCE.md;md5=ff30a1c41dfd9e6fa559a9e45ee98302"
 SRC_URI = "https://monocypher.org/download/${BPN}-${PV}.tar.gz"
 SRC_URI[sha512sum] = "bf275d4c53ff94af6cdc723a4e002e9f080f4d1436c86c76bb37870b34807f1d7b32331d8ff8a1aeb369e946f3769021e03e63efac25b82efc5abf54dc084714"
 
-MIRRORS = "https://.*/.* https://github.com/LoupVaillant/Monocypher/releases/download/${PV}/${BPN}-${PV}.tar.gz "
+MIRRORS =+ "https://.*/.* https://github.com/LoupVaillant/Monocypher/releases/download/${PV}/${BPN}-${PV}.tar.gz"
 
-S = "${WORKDIR}/${BPN}-${PV}"
+S = "${UNPACKDIR}/${BPN}-${PV}"
 
 CFLAGS += "-pedantic -Wall -Wextra -O3"
 EXTRA_OEMAKE = "'PREFIX=${prefix}' 'DESTDIR=${D}' 'CFLAGS=${CFLAGS}' 'LIBDIR=${libdir}'"

@@ -15,7 +15,6 @@ SRC_URI = " \
 "
 
 SRCREV = "215b53cf3b48ee761f4c40908b3874b2e5e95e9f"
-UPSTREAM_CHECK_COMMITS = "1"
 
 GO_IMPORT = "go.etcd.io/etcd/v3"
 GO_INSTALL = "src/${GO_IMPORT}/"
@@ -24,7 +23,7 @@ RDEPENDS:${PN}-dev = " \
     bash \
 "
 
-export GO111MODULE="on"
+export GO111MODULE = "on"
 
 inherit go systemd pkgconfig features_check
 
@@ -71,3 +70,4 @@ do_install:append() {
 
 FILES:${PN}:append = " ${sysconfdir}/etcd.d/etcd-existing.conf"
 
+SKIP_RECIPE[etcd] ?= "QA Issue: task do_compile has network enabled"

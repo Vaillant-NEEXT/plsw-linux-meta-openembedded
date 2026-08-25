@@ -15,7 +15,6 @@ SRC_URI = "git://git.code.sf.net/p/minidlna/git;branch=master;module=git \
            file://0001-Add-compatibility-with-FFMPEG-7.0.patch \
            "
 
-S = "${WORKDIR}/git"
 
 # This remove "--exclude=autopoint" option from autoreconf argument to avoid
 # configure.ac:30: error: required file './ABOUT-NLS' not found
@@ -44,3 +43,4 @@ SYSTEMD_SERVICE:${PN} = "minidlna.service"
 INITSCRIPT_NAME = "minidlna"
 INITSCRIPT_PARAMS = "defaults 90"
 
+CVE_STATUS[CVE-2024-51442] = "not-applicable-config: vulnerability requires root access"

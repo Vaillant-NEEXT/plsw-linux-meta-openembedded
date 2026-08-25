@@ -30,9 +30,11 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/Artistic-1.0;md5=cda03bbdc3c195
 
 SRC_URI[sha256sum] = "16a29f7acaeec081bf0e7303ba5ee24fda1d21a1104669b837745f3ea61d6afa"
 
-S = "${WORKDIR}/Unix-Statgrab-${PV}"
-
-export LD = "${CCLD}"
+S = "${UNPACKDIR}/Unix-Statgrab-${PV}"
 
 inherit cpan pkgconfig ptest-perl
 
+do_configure:prepend() {
+    # Toolchains forcibly define LD, so override it in the task
+    export LD="${CCLD}"
+}

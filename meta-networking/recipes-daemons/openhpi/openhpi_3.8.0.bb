@@ -61,11 +61,12 @@ INSANE_SKIP:${PN}-libs = "dev-so"
 RDEPENDS:${PN} += "${PN}-libs"
 RDEPENDS:${PN}-ptest += "packagegroup-core-buildessential"
 
-PACKAGECONFIG ??= "libgcrypt non32bit snmp-bc"
+PACKAGECONFIG ??= "libgcrypt non32bit"
 PACKAGECONFIG[sysfs] = "--enable-sysfs,--disable-sysfs,sysfsutils,"
 PACKAGECONFIG[libgcrypt] = "--enable-encryption,--disable-encryption,libgcrypt,"
 PACKAGECONFIG[non32bit] = "--enable-non32bit-int,--disable-non32bit-int,,"
 PACKAGECONFIG[snmp-bc] = "--enable-snmp_bc,--disable-snmp_bc"
+PACKAGECONFIG[ov-rest] = "--enable-ov_rest,--disable-ov_rest,curl rabbitmq-c json-c"
 
 export DISTRO
 

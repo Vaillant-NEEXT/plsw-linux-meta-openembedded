@@ -16,7 +16,6 @@ inherit cmake
 
 DEPENDS += "grpc protobuf cpprest grpc-native protobuf-native"
 
-S = "${WORKDIR}/git"
 
 EXTRA_OECONF += "-DCPPREST_EXCLUDE_WEBSOCKETS=ON"
 
@@ -26,3 +25,5 @@ do_install:append() {
 
 SOLIBS = ".so"
 FILES_SOLIBSDEV = ""
+
+SKIP_RECIPE[etcd-cpp-apiv3] ?= "needs ccpprest which needs websocket does work with boost >= 1.87"

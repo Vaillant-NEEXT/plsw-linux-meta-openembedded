@@ -1,4 +1,3 @@
-SRC_URI = "git://gitlab.freedesktop.org/pwithnall/malcontent.git;protocol=https;branch=main"
-S = "${WORKDIR}/git"
-SRCREV = "3ba80995bb25b7aeda7e21d547f9e39ff9a81736"
-PV = "0.12.0"
+SRC_URI = "git://gitlab.freedesktop.org/pwithnall/malcontent.git;protocol=https;branch=malcontent-0.13"
+SRCREV = "090042fec5181621e2fd8cfef9fc446ed86db98b"
+PV = "0.13.1"

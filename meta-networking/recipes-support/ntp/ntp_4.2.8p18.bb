@@ -16,6 +16,9 @@ SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/ntp-${PV}.tar.g
            file://0001-libntp-Do-not-use-PTHREAD_STACK_MIN-on-glibc.patch \
            file://0001-test-Fix-build-with-new-compiler-defaults-to-fno-com.patch \
            file://0001-sntp-Fix-types-in-check-for-pthread_detach.patch \
+           file://0001-include-fix-build-failure-with-glibc-2.43-_Generic-m.patch \
+           file://0001-ITS-10011-build-fix-compatibility-with-stricter-C99-.patch \
+           file://0001-colcomp-sntp-libpkgver-colcomp.c-Convert-K-R-functio.patch \
            file://ntpd \
            file://ntp.conf \
            file://ntpd.service \
@@ -25,6 +28,9 @@ SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/ntp-${PV}.tar.g
 "
 
 SRC_URI[sha256sum] = "cf84c5f3fb1a295284942624d823fffa634144e096cfc4f9969ac98ef5f468e5"
+
+UPSTREAM_CHECK_URI = "https://downloads.nwtime.org/ntp/"
+UPSTREAM_CHECK_REGEX = "ntp-(?P<pver>(\d+(\.\d+)+)(p\d+)?)\.tar"
 
 CVE_STATUS[CVE-2016-9312] = "not-applicable-platform: Issue only applies on Windows"
 CVE_STATUS[CVE-2019-11331] = "upstream-wontfix: inherent to RFC 5905 and cannot be fixed without breaking compatibility"
@@ -54,6 +60,11 @@ CVE_STATUS_NTP = " \
 
 
 inherit autotools update-rc.d useradd systemd pkgconfig
+
+# For some reason this recipe reconfigures the nested configure.ac files in
+# do_compile because libtool.m4 is newer than aclocal.m4, and that then
+# doesn't know about the site configuration.
+do_compile[prefuncs] += "autotools_sitefiles"
 
 # The ac_cv_header_readline_history is to stop ntpdc depending on either
 # readline or curses

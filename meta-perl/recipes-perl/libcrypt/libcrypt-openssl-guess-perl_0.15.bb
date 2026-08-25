@@ -23,7 +23,7 @@ RDEPENDS:${PN} = "\
 
 EXTRA_CPANFLAGS = "INC='-I${STAGING_INCDIR}' LIBS='-L${STAGING_LIBDIR} -lssl -L${STAGING_DIR_TARGET}${base_libdir} -lcrypto'"
 
-S = "${WORKDIR}/Crypt-OpenSSL-Guess-${PV}"
+S = "${UNPACKDIR}/Crypt-OpenSSL-Guess-${PV}"
 
 inherit cpan ptest-perl
 
@@ -34,4 +34,5 @@ PROVIDES += "libcrypt-openssl-guess"
 
 RDEPENDS:${PN}-ptest += "\
     perl-module-test-more \
+    perl-module-english \
 "

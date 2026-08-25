@@ -12,11 +12,11 @@ inherit python3native python3targetconfig
 SRC_URI = "https://www.mercurial-scm.org/release/${BP}.tar.gz"
 SRC_URI[sha256sum] = "f75d6a4a75823a1b7d713a4967eca2f596f466e58fc6bc06d72642932fd7e307"
 
-S = "${WORKDIR}/mercurial-${PV}"
+S = "${UNPACKDIR}/mercurial-${PV}"
 
 BBCLASSEXTEND = "native"
 
-export LDSHARED="${CCLD} -shared"
+export LDSHARED = "${CCLD} -shared"
 
 EXTRA_OEMAKE = "STAGING_LIBDIR=${STAGING_LIBDIR} STAGING_INCDIR=${STAGING_INCDIR} \
     PREFIX=${prefix}"
@@ -34,4 +34,4 @@ PACKAGES =+ "${PN}-python"
 FILES:${PN} += "${PYTHON_SITEPACKAGES_DIR} ${datadir}"
 FILES:${PN}-python = "${nonarch_libdir}/${PYTHON_DIR}"
 
-CVE_STATUS[CVE-2022-43410] = "cpe-incorrect: The recipe used in the `meta-openembedded` is a different mercurial package compared to the one which has the CVE issue."
+CVE_PRODUCT = "mercurial-scm:mercurial mercurial:mercurial"

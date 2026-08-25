@@ -9,7 +9,6 @@ SRC_URI = "git://github.com/marzer/tomlplusplus.git;protocol=https;branch=master
 
 PV = "3.4.0"
 SRCREV = "30172438cee64926dc41fdd9c11fb3ba5b2ba9de"
-S = "${WORKDIR}/git"
 
 DEPENDS = "cmake-native"
 
@@ -17,6 +16,10 @@ inherit meson ptest pkgconfig
 
 EXTRA_OEMESON += "-Dbuild_tests=${@bb.utils.contains("DISTRO_FEATURES", "ptest", "true", "false", d)} \
 "
+
+# See - https://github.com/marzer/tomlplusplus/issues/279
+CXXFLAGS:append:toolchain-clang = " -stdlib=libstdc++"
+LDFLAGS:append:toolchain-clang = " -stdlib=libstdc++"
 
 do_install_ptest () {
     install -d ${D}${PTEST_PATH}/tests

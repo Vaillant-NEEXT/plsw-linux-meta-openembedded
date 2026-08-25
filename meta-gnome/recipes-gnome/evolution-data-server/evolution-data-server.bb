@@ -11,15 +11,14 @@ inherit pkgconfig gsettings gobject-introspection mime-xdg features_check gtk-do
 ANY_OF_DISTRO_FEATURES = "${GTK3DISTROFEATURES}"
 REQUIRED_DISTRO_FEATURES = "opengl"
 
-SRC_URI += " \
-    file://0001-cmake-Do-not-export-CC-into-gir-compiler.patch \
-    file://0001-CMakeLists.txt-Remove-TRY_RUN-for-iconv.patch \
-    file://0002-CMakeLists.txt-remove-CHECK_C_SOURCE_RUNS-check.patch \
-    file://0003-contact-Replace-the-Novell-sample-contact-with-somet.patch \
-    file://0004-call-native-helpers.patch \
-    file://0001-data-CMakeLists.txt-dont-create-automatic-google-log.patch \
-    file://iconv-detect.h \
-"
+SRC_URI += "file://0001-cmake-Do-not-export-CC-into-gir-compiler.patch \
+           file://0001-CMakeLists.txt-Remove-TRY_RUN-for-iconv.patch \
+           file://0002-CMakeLists.txt-remove-CHECK_C_SOURCE_RUNS-check.patch \
+           file://0003-contact-Replace-the-Novell-sample-contact-with-somet.patch \
+           file://0004-call-native-helpers.patch \
+           file://0001-data-CMakeLists.txt-dont-create-automatic-google-log.patch \
+           file://iconv-detect.h \
+           "
 
 LKSTRFTIME = "HAVE_LKSTRFTIME=ON"
 LKSTRFTIME:libc-musl = "HAVE_LKSTRFTIME=OFF"
@@ -56,7 +55,7 @@ PACKAGECONFIG[weather] = "-DENABLE_WEATHER=ON,-DENABLE_WEATHER=OFF,libgweather4"
 LDFLAGS += "-lpthread -lgmodule-2.0 -lgthread-2.0"
 
 # invokes libraries from build host
-GI_DATA_ENABLED:libc-musl="False"
+GI_DATA_ENABLED:libc-musl = "False"
 
 do_configure:append () {
     cp ${UNPACKDIR}/iconv-detect.h ${S}/src

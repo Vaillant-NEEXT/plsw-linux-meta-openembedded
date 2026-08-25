@@ -1,6 +1,6 @@
 SUMMARY = "Just-In-Time Compiler for Lua"
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=076b97f5c7e61532f7f6f3865f04da57"
+LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=a2c43bf4a9ea63755af2131b0ae59ff3"
 HOMEPAGE = "http://luajit.org"
 
 SRC_URI = "git://luajit.org/git/luajit-2.0.git;protocol=http;branch=v2.1 \
@@ -9,9 +9,7 @@ SRC_URI = "git://luajit.org/git/luajit-2.0.git;protocol=http;branch=v2.1 \
            "
 
 PV = "2.1"
-SRCREV = "c525bcb9024510cad9e170e12b6209aedb330f83"
-
-S = "${WORKDIR}/git"
+SRCREV = "659a61693aa3b87661864ad0f12eee14c865cd7f"
 
 inherit pkgconfig binconfig siteinfo
 
@@ -96,3 +94,7 @@ COMPATIBLE_HOST:powerpc64 = "null"
 COMPATIBLE_HOST:powerpc64le = "null"
 COMPATIBLE_HOST:riscv64 = "null"
 COMPATIBLE_HOST:riscv32 = "null"
+
+CVE_STATUS[CVE-2024-25176] = "fixed-version: The used revision contains the fix already."
+CVE_STATUS[CVE-2024-25177] = "fixed-version: The used revision contains the fix already."
+CVE_STATUS[CVE-2024-25178] = "fixed-version: The used revision contains the fix already."

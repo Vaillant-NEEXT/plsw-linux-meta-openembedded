@@ -21,7 +21,6 @@ SRC_URI = "git://github.com/Arkq/bluez-alsa.git;protocol=https;branch=master \
 
 SRCREV = "959573c2cccef5cf074f5b2fa7941abbd699c5f4"
 
-S = "${WORKDIR}/git"
 
 PACKAGECONFIG ??= "aplay cli hcitop ${@bb.utils.filter('DISTRO_FEATURES', 'systemd', d)}"
 PACKAGECONFIG[a2dpconf] = "--enable-a2dpconf,--disable-a2dpconf"
@@ -59,6 +58,7 @@ EXTRA_OECONF = "\
 PACKAGE_BEFORE_PN = "${PN}-aplay"
 
 FILES:${PN}-aplay += "${bindir}/bluealsa-aplay"
+FILES:${PN}-staticdev += "${libdir}/alsa-lib/*.a"
 FILES:${PN} += "${libdir}/alsa-lib/* ${datadir}/dbus-1/system.d"
 
 RRECOMMENDS:${PN} = "${PN}-aplay"

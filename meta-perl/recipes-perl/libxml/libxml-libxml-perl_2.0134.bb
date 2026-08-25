@@ -34,7 +34,7 @@ LIC_FILES_CHKSUM = "file://debian/copyright;md5=64eda1bc135f0ece1d1187f2a8ac82c1
 SRC_URI[libxml.md5sum] = "dce687dd8b7e82d1c359fd74b1852f64"
 SRC_URI[libxml.sha256sum] = "f0bca4d0c2da35d879fee4cd13f352014186cedab27ab5e191f39b5d7d4f46cf"
 
-S = "${WORKDIR}/XML-LibXML-${PV}"
+S = "${UNPACKDIR}/XML-LibXML-${PV}"
 
 inherit cpan ptest-perl
 
@@ -70,3 +70,8 @@ do_install_ptest() {
 	cp -r ${B}/test ${D}${PTEST_PATH}
 	chown -R root:root ${D}${PTEST_PATH}
 }
+
+# See issues:
+# https://github.com/shlomif/perl-XML-LibXML/issues/84 - libxml incompatibility
+# https://github.com/shlomif/perl-XML-LibXML/issues/91 - looking for new maintainer
+SKIP_RECIPE[libxml-libxml-perl] ?= "Not compatible with latest libxml"

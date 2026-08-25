@@ -9,9 +9,9 @@ SRC_URI = "https://www.ibr.cs.tu-bs.de/projects/${BPN}/download/${BP}.tar.gz \
            file://libsmi-fix-the-test-dump-files.patch \
            file://0001-Define-createIdentifierRef-prototype-in-yang-complex.patch \
            file://0001-parser-yang-Define-_DEFAULT_SOURCE.patch \
+           file://0001-Fix-build-failure-with-gcc-15.patch \
           "
 
-SRC_URI[md5sum] = "4bf47483c06c9f07d1b10fbc74eddf11"
 SRC_URI[sha256sum] = "f21accdadb1bb328ea3f8a13fc34d715baac6e2db66065898346322c725754d3"
 
 UPSTREAM_CHECK_URI = "https://repology.org/project/libsmi/information"
@@ -20,6 +20,9 @@ UPSTREAM_CHECK_REGEX = "${BPN}-(?P<pver>\d+(\.\d+)+)"
 DEPENDS += "bison-native flex-native wget-native gawk-native"
 
 inherit autotools-brokensep update-alternatives
+
+CACHED_CONFIGUREVARS += "ac_cv_prog_cc_c23=no"
+
 ALTERNATIVE_PRIORITY = "50"
 ALTERNATIVE:${PN}-yang = " ietf-interfaces ietf-netconf-acm ietf-netconf-with-defaults ietf-netconf"
 ALTERNATIVE_LINK_NAME[ietf-interfaces] = "${datadir}/yang/ietf-interfaces.yang"

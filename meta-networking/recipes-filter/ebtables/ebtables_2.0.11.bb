@@ -6,8 +6,6 @@ LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://COPYING;md5=53b4a999993871a28ab1488fdbd2e73e"
 SECTION = "net"
 
-RDEPENDS:${PN} += "bash"
-
 RRECOMMENDS:${PN} += "kernel-module-ebtables \
     "
 
@@ -23,7 +21,7 @@ SRC_URI:append:libc-musl = " file://0010-Adjust-header-include-sequence.patch"
 SRC_URI[md5sum] = "071c8b0a59241667a0044fb040d4fc72"
 SRC_URI[sha256sum] = "b71f654784a726329f88b412ef7b96b4e5d786ed2bd28193ed7b4c0d677dfd2a"
 
-inherit systemd autotools
+inherit systemd autotools update-alternatives
 
 do_install:append () {
 	# Replace upstream ebtables-save perl script with Fedora bash based rewrite
@@ -51,3 +49,8 @@ FILES:${PN}-dbg += "${base_libdir}/ebtables/.debug"
 FILES:${PN} += "${base_libdir}/ebtables/*.so"
 
 SYSTEMD_SERVICE:${PN} = "ebtables.service"
+
+ALTERNATIVE:${PN} = "ebtables"
+ALTERNATIVE_LINK_NAME[ebtables] = "${sbindir}/ebtables"
+ALTERNATIVE_TARGET[ebtables] = "${sbindir}/ebtables-legacy"
+ALTERNATIVE_PRIORITY[ebtables] = "90"

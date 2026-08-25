@@ -22,9 +22,9 @@ SRC_URI = "https://downloads.isc.org/isc/dhcp/4.4.3-P1/dhcp-4.4.3-P1.tar.gz \
 SRC_URI[sha256sum] = "0ac416bb55997ca8632174fd10737fd61cdb8dba2752160a335775bc21dc73c7"
 
 UPSTREAM_CHECK_URI = "http://ftp.isc.org/isc/dhcp/"
-UPSTREAM_CHECK_REGEX = "(?P<pver>\d+\.\d+\.(\d+?))/"
+UPSTREAM_CHECK_REGEX = "(?P<pver>(\d+(\.\d+)+)(-P\d+)?)"
 
-S = "${WORKDIR}/dhcp-4.4.3-P1"
+S = "${UNPACKDIR}/dhcp-4.4.3-P1"
 
 inherit autotools-brokensep systemd pkgconfig
 
@@ -39,7 +39,7 @@ BIND_EXTRA_CONFIG = "\
         --host=${HOST_SYS} \
         --target=${TARGET_SYS} \
 "
-
+CACHED_CONFIGUREVARS += "ac_cv_prog_cc_c23=no"
 EXTRA_OECONF = "--with-bind-extra-config="${BIND_EXTRA_CONFIG}" \
                 --enable-paranoia \
                 --disable-static \

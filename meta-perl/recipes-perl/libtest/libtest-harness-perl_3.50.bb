@@ -30,13 +30,25 @@ SRC_URI[sha256sum] = "79b6acdc444f1924cd4c2e9ed868bdc6e09580021aca8ff078ede2ffef
 
 UPSTREAM_CHECK_REGEX = "Test\-Harness\-(?P<pver>(\d+\.\d+))(?!_\d+).tar"
 
-S = "${WORKDIR}/Test-Harness-${PV}"
+S = "${UNPACKDIR}/Test-Harness-${PV}"
 
 inherit cpan ptest-perl
 
 RDEPENDS:${PN} += "\
     perl-module-benchmark \
 "
+
+RDEPENDS:${PN}-ptest += "\
+    perl-module-carp \
+    perl-module-file-find \
+    perl-module-file-glob \
+    perl-module-file-spec-functions \
+    perl-module-getopt-long \
+    perl-module-io-select \
+    perl-module-ipc-open3 \
+    perl-module-lib \
+    perl-module-test-more \
+    perl-module-text-parsewords"
 
 RPROVIDES:${PN} += "libapp-prove-perl \
                     libapp-prove-state-perl \

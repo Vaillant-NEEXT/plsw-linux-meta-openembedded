@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = " \
     file://${COMMON_LICENSE_DIR}/BSD-2-Clause;md5=cb641bc04cda31daea161b1bc15da69f \
     file://${COMMON_LICENSE_DIR}/BSD-3-Clause;md5=550794465ba0ec5312d6919e203a55f9 \
 "
-DEPENDS = "libbsd libpcre zlib libcap libusb squashfs-tools p7zip libselinux googletest"
+DEPENDS = "libbsd libpcre zlib libcap libusb squashfs-tools 7zip libselinux googletest"
 
 SRCREV_core = "abfd66fafcbb691d7860df059f1df1c9b1ef29da"
 
@@ -21,6 +21,8 @@ SRC_URI += " \
     file://debian/external/libunwind/user_pt_regs.patch \
     file://debian/external/libunwind/legacy_built-in_sync_functions.patch \
     file://debian/external/libunwind/20150704-CVE-2015-3239_dwarf_i.h.patch \
+    file://debian/external/libunwind/libunwind-guard-unreachable-macro-to-avoid-redefinit.patch \
+    file://debian/external/libunwind/libunwind-fix-strchr-conformance-to-ISO-C23.patch \
     \
     file://debian/system/core/move-log-file-to-proper-dir.patch \
     file://debian/system/core/Added-missing-headers.patch \
@@ -38,14 +40,16 @@ SRC_URI += " \
     file://debian/system/core/stub-out-fastdeploy.patch \
     file://debian/system/core/fix-standard-namespace-errors.patch \
     file://debian/system/core/Add-riscv64-support.patch \
+    file://debian/system/core/android-tools-scope-write-macro-to-prevent-conflict-.patch \
+    file://debian/system/core/libziparchive-fix-missing-fixed-width-integer-types-.patch \
     \
 "
 
 # patches which don't come from debian
 SRC_URI += " \
-    file://rules_yocto.mk;subdir=git \
+    file://rules_yocto.mk;subdir=${BB_GIT_DEFAULT_DESTSUFFIX} \
     file://android-tools-adbd.service \
-    file://adbd.mk;subdir=git/debian/system/core \
+    file://adbd.mk;subdir=${BB_GIT_DEFAULT_DESTSUFFIX}/debian/system/core \
     file://remount \
     file://0001-Fixes-for-yocto-build.patch \
     file://0002-android-tools-modifications-to-make-it-build-in-yoct.patch \
@@ -55,7 +59,6 @@ SRC_URI += " \
     file://0001-liblp-fix-building-with-GCC-14.patch \
 "
 
-S = "${WORKDIR}/git"
 B = "${WORKDIR}/${BPN}"
 
 # http://errors.yoctoproject.org/Errors/Details/1debian881/
@@ -168,7 +171,7 @@ do_install() {
 
 PACKAGES =+ "${PN}-fstools ${PN}-adbd"
 
-RDEPENDS:${BPN} = "${BPN}-conf p7zip"
+RDEPENDS:${BPN} = "${BPN}-conf 7zip"
 
 FILES:${PN}-adbd = "\
     ${bindir}/adbd \
@@ -188,9 +191,3 @@ FILES:${PN}-fstools = "\
 FILES:${PN} += "${libdir}/android ${libdir}/android/*"
 
 BBCLASSEXTEND = "native"
-
-android_tools_enable_devmode() {
-    touch ${IMAGE_ROOTFS}/etc/usb-debugging-enabled
-}
-
-ROOTFS_POSTPROCESS_COMMAND_${PN}-adbd += "${@bb.utils.contains("USB_DEBUGGING_ENABLED", "1", "android_tools_enable_devmode;", "", d)}"

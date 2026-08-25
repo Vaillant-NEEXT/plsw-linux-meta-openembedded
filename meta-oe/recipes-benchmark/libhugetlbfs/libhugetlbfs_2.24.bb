@@ -3,8 +3,7 @@ HOMEPAGE = "https://github.com/libhugetlbfs/libhugetlbfs"
 LICENSE = "LGPL-2.1-only"
 LIC_FILES_CHKSUM = "file://LGPL-2.1;md5=2d5025d4aa3495befef8f17206a5b0a1"
 
-DEPENDS = "sysfsutils"
-RDEPENDS:${PN} += "bash python3-core"
+RDEPENDS:${PN} += "bash"
 RDEPENDS:${PN}-tests += "bash python3-core python3-resource"
 
 PE = "1"
@@ -25,13 +24,14 @@ SRC_URI = " \
     file://0011-include-limits.h-for-PATH_MAX.patch \
     file://0012-huge_page_setup_helper-use-python3-interpreter.patch \
     file://0013-elflink.c-include-libgen.h-for-basename.patch \
+    file://0014-tests-Add-ldflags-to-linker-commandline-for-libheaps.patch \
+    file://0015-support-reproducible-builds.patch \
 "
 
 UPSTREAM_CHECK_GITTAGREGEX = "(?P<pver>\d+(\.\d+)+)"
 
-S = "${WORKDIR}/git"
 
-COMPATIBLE_HOST = "(i.86|x86_64|powerpc|powerpc64|aarch64|arm).*-linux*"
+COMPATIBLE_HOST = "(i.86|x86_64|powerpc|powerpc64|riscv64|aarch64|arm).*-linux*"
 
 LIBARGS = "LIB32=${baselib} LIB64=${baselib}"
 LIBHUGETLBFS_ARCH = "${TARGET_ARCH}"
@@ -42,23 +42,18 @@ EXTRA_OEMAKE = "'ARCH=${LIBHUGETLBFS_ARCH}' 'OPT=${CFLAGS}' 'CC=${CC}' ${LIBARGS
 PARALLEL_MAKE = ""
 CFLAGS += "-fexpensive-optimizations -frename-registers -fomit-frame-pointer -g0"
 
-export HUGETLB_LDSCRIPT_PATH="${S}/ldscripts"
-
-TARGET_CC_ARCH += "${LDFLAGS}"
+export HUGETLB_LDSCRIPT_PATH = "${S}/ldscripts"
 
 LDFLAGS += "-B${S}"
+# glibc objects have missing symbols from libgcc that compiler-rt does not provide
+# /usr/src/debug/glibc/2.41+git/stdio-common/../stdio-common/printf_fphex.c:123:(.text+0x77): undefined reference to `__unordtf2'
+LDFLAGS:append:libc-glibc:toolchain-clang:x86 = " --rtlib=libgcc --unwindlib=libgcc"
 
-inherit autotools-brokensep cpan-base
+inherit autotools-brokensep
 
-#The CUSTOM_LDSCRIPTS doesn't work with the gold linker
 do_configure:prepend() {
-    if [ "${@bb.utils.filter('DISTRO_FEATURES', 'ld-is-gold', d)}" ]; then
-        sed -i 's/CUSTOM_LDSCRIPTS = yes/CUSTOM_LDSCRIPTS = no/'  Makefile.in
-    fi
-
     ln -sf ld.hugetlbfs ${S}/ld
     ln -sf ld.hugetlbfs ${S}/ld.bfd
-    ln -sf ld.hugetlbfs ${S}/ld.gold
     ln -sf ld.hugetlbfs ${S}/ld.lld
 }
 

@@ -12,7 +12,6 @@ SRC_URI = "http://sourceforge.net/projects/pamsshagentauth/files/pam_ssh_agent_a
            file://0002-Check-against-the-correct-OPENSSL_VERSION_NUMBER.patch \
            file://0001-configure-Include-stdio.h-for-printf.patch \
            "
-SRC_URI[md5sum] = "8dbe90ab3625e545036333e6f51ccf1d"
 SRC_URI[sha256sum] = "3c53d358d6eaed1b211239df017c27c6f9970995d14102ae67bae16d4f47a763"
 
 DEPENDS += "libpam openssl"
@@ -26,7 +25,7 @@ RDEPENDS:${PN} += "openssh-misc"
 
 # Kind of unfortunate to have underscores in the name.
 #
-S = "${WORKDIR}/pam_ssh_agent_auth-${PV}"
+S = "${UNPACKDIR}/pam_ssh_agent_auth-${PV}"
 
 inherit autotools-brokensep perlnative
 

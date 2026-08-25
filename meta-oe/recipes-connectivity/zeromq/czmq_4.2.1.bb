@@ -6,7 +6,6 @@ DEPENDS = "zeromq"
 
 SRC_URI = "https://github.com/zeromq/czmq/releases/download/v${PV}/czmq-${PV}.tar.gz"
 
-SRC_URI[md5sum] = "471e9ec120fc66a2fe2aae14359e3cfa"
 SRC_URI[sha256sum] = "5d720a204c2a58645d6f7643af15d563a712dad98c9d32c1ed913377daa6ac39"
 
 UPSTREAM_CHECK_URI = "https://github.com/zeromq/${BPN}/releases"
@@ -17,6 +16,7 @@ inherit cmake pkgconfig
 PACKAGES = "lib${BPN} lib${BPN}-dev lib${BPN}-staticdev ${PN} ${PN}-dbg"
 
 EXTRA_OECMAKE = " \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
     -DCMAKECONFIG_INSTALL_DIR:PATH=${@os.path.relpath(d.getVar('libdir'), d.getVar('prefix') + '/') + "/cmake/"} \
 "
 

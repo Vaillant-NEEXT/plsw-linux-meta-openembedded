@@ -4,8 +4,9 @@ SECTION = "libs"
 LICENSE = "GPL-2.0-only & LGPL-2.0-only"
 
 DEPENDS = "flex flex-native"
+RRECOMMENDS:${PN} = "kernel-module-atm-tcp"
 
-SRC_URI = "http://nchc.dl.sourceforge.net/project/${BPN}/${BPN}/${PV}/${BPN}-${PV}.tar.gz \
+SRC_URI = "${SOURCEFORGE_MIRROR}/${BPN}/${BPN}/${PV}/${BP}.tar.gz \
            file://link-with-ldflags.patch \
            file://install-from-buildir.patch \
            file://0001-fix-compile-error-with-linux-kernel-v4.8.patch \
@@ -16,6 +17,8 @@ SRC_URI = "http://nchc.dl.sourceforge.net/project/${BPN}/${BPN}/${PV}/${BPN}-${P
            file://0001-make-Add-PREFIX-knob.patch \
            file://0001-include-string-h-from-memcpy-and-strcpy-function-pro.patch \
            file://0001-configure-Check-for-symbol-from-libresolv-instead-of.patch \
+           file://0001-Fix-implicit-declaration-error.patch \
+           file://0002-Fix-build-with-gcc-15.patch \
            "
 
 SRC_URI:append:libc-musl = " file://musl-no-on_exit.patch"
@@ -29,10 +32,8 @@ file://COPYING.LGPL;md5=6e29c688d912da12b66b73e32b03d812"
 
 inherit autotools pkgconfig
 
+CACHED_CONFIGUREVARS += "ac_cv_prog_cc_c23=no"
+
 EXTRA_OEMAKE += "ROOTPREFIX=${root_prefix}"
 
 FILES:${PN} += "${nonarch_base_libdir}/firmware"
-
-# http://errors.yoctoproject.org/Errors/Details/766901/
-# linux-atm-2.5.2/src/led/conn.c:414:57: error: passing argument 3 of 'accept' from incompatible pointer type [-Wincompatible-pointer-types]
-CFLAGS += "-Wno-error=incompatible-pointer-types"

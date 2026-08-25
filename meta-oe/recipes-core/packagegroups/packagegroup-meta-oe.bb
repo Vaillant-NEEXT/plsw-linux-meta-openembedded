@@ -52,6 +52,7 @@ RDEPENDS:packagegroup-meta-oe = "\
 
 RDEPENDS:packagegroup-meta-oe-benchmarks = "\
     bonnie++ \
+    cpupower \
     dbench \
     dhrystone \
     fio \
@@ -67,6 +68,7 @@ RDEPENDS:packagegroup-meta-oe-benchmarks = "\
     nbench-byte \
     phoronix-test-suite \
     qperf \
+    rtla \
     s-suite \
     stressapptest \
     tinymembench \
@@ -163,7 +165,7 @@ RDEPENDS:packagegroup-meta-oe-connectivity:append:libc-glibc = " wvstreams wvdia
 
 # dracut needs dracut
 RDEPENDS:packagegroup-meta-oe-core = "\
-    ${@bb.utils.contains("DISTRO_FEATURES", "systemd", "dbus-broker", "", d)} \
+    ${@bb.utils.filter('VIRTUAL-RUNTIME_dbus', 'dbus-broker', d)} \
     dbus-cxx \
     dbus-daemon-proxy \
     distro-feed-configs \
@@ -212,6 +214,7 @@ RDEPENDS:packagegroup-meta-oe-dbs = "\
     soci \
 "
 RDEPENDS:packagegroup-meta-oe-dbs:remove:libc-musl:powerpc = "rocksdb"
+RDEPENDS:packagegroup-meta-oe-dbs:remove:riscv32 = "influxdb"
 
 RDEPENDS:packagegroup-meta-oe-devtools = "\
     abseil-cpp \
@@ -238,7 +241,7 @@ RDEPENDS:packagegroup-meta-oe-devtools = "\
     grpc \
     guider \
     heaptrack \
-    icon-slicer \
+    ${@bb.utils.contains("DISTRO_FEATURES", "x11", "icon-slicer", "", d)} \
     ipc-run \
     iptraf-ng \
     jemalloc \
@@ -280,6 +283,8 @@ RDEPENDS:packagegroup-meta-oe-devtools = "\
     protobuf-c \
     pugixml \
     python3-distutils-extra \
+    python3-kconfiglib \
+    python3-pcpp \
     python3-pycups \
     rapidjson \
     serialcheck \
@@ -292,10 +297,9 @@ RDEPENDS:packagegroup-meta-oe-devtools = "\
     xerces-c-samples \
     xmlrpc-c \
     yajl \
-    yasm \
 "
-RDEPENDS:packagegroup-meta-oe-devtools:append:x86 = " cpuid msr-tools pahole pmtools"
-RDEPENDS:packagegroup-meta-oe-devtools:append:x86-64 = " cpuid msr-tools pahole pcimem pmtools"
+RDEPENDS:packagegroup-meta-oe-devtools:append:x86 = " cpuid pahole"
+RDEPENDS:packagegroup-meta-oe-devtools:append:x86-64 = " cpuid pahole pcimem"
 RDEPENDS:packagegroup-meta-oe-devtools:append:riscv64 = " pcimem"
 RDEPENDS:packagegroup-meta-oe-devtools:append:arm = " pcimem"
 RDEPENDS:packagegroup-meta-oe-devtools:append:aarch64 = " pahole pcimem"
@@ -309,8 +313,8 @@ RDEPENDS:packagegroup-meta-oe-devtools:remove:mips64el = "luajit nodejs"
 RDEPENDS:packagegroup-meta-oe-devtools:remove:powerpc = "android-tools breakpad lshw luajit uftrace"
 RDEPENDS:packagegroup-meta-oe-devtools:remove:powerpc64 = "android-tools breakpad lshw luajit ply uftrace"
 RDEPENDS:packagegroup-meta-oe-devtools:remove:powerpc64le = "android-tools breakpad lshw luajit ply uftrace"
-RDEPENDS:packagegroup-meta-oe-devtools:remove:riscv64 = "breakpad concurrencykit heaptrack lshw ltrace luajit nodejs ply"
-RDEPENDS:packagegroup-meta-oe-devtools:remove:riscv32 = "breakpad concurrencykit heaptrack lshw ltrace luajit nodejs ply uftrace"
+RDEPENDS:packagegroup-meta-oe-devtools:remove:riscv64 = "breakpad concurrencykit lshw ltrace luajit nodejs ply"
+RDEPENDS:packagegroup-meta-oe-devtools:remove:riscv32 = "android-tools breakpad concurrencykit heaptrack lshw ltrace luajit nodejs ply uftrace"
 RDEPENDS:packagegroup-meta-oe-devtools:remove:libc-musl:riscv32 = "php"
 RDEPENDS:packagegroup-meta-oe-devtools:remove:aarch64 = "concurrencykit"
 RDEPENDS:packagegroup-meta-oe-devtools:remove:x86 = "ply"
@@ -346,10 +350,8 @@ RDEPENDS:packagegroup-meta-oe-extended = "\
     isomd5sum \
     jansson \
     jpnevulator \
-    konkretcmpi \
     libblockdev \
     libcec \
-    libconfig \
     libdivecomputer \
     libfastjson \
     libfile-fnmatch-perl \
@@ -385,7 +387,7 @@ RDEPENDS:packagegroup-meta-oe-extended = "\
     nicstat \
     ${@bb.utils.contains("DISTRO_FEATURES", "pam", "openwsman", "", d)} \
     ostree \
-    p7zip \
+    7zip \
     ${@bb.utils.contains("DISTRO_FEATURES", "pam", "pam-plugin-ccreds pam-plugin-ldapdb pam-ssh-agent-auth", "", d)} \
     pegtl \
     ${@bb.utils.contains("DISTRO_FEATURES", "polkit", "polkit-group-rule-datetime polkit-group-rule-network polkit", "", d)} \
@@ -444,7 +446,6 @@ RDEPENDS:packagegroup-meta-oe-gnome = "\
     gtkmm \
     gtkmm3 \
     libjcat \
-    ${@bb.utils.contains("DISTRO_FEATURES", "gobject-introspection-data", "libpeas", "", d)} \
     pyxdg \
 "
 
@@ -597,7 +598,6 @@ RDEPENDS:packagegroup-meta-oe-graphics = "\
     xrdb \
     xrefresh \
     ${@bb.utils.contains("DISTRO_FEATURES", "x11 pam", "xscreensaver", "", d)} \
-    xserver-common \
     xsetroot \
     xstdcmap \
     xterm \
@@ -715,12 +715,11 @@ RDEPENDS:packagegroup-meta-oe-support = "\
     c-ares \
     ccid \
     ckermit \
-    clinfo \
+    ${@bb.utils.contains("DISTRO_FEATURES", "opencl", "clinfo", "", d)} \
     cmark \
     ${@bb.utils.contains("DISTRO_FEATURES", "polkit gobject-introspection-data", "colord", "", d)} \
     consolation \
     c-periphery \
-    cpprest \
     ctapi-common \
     daemonize \
     daemontools \
@@ -763,9 +762,7 @@ RDEPENDS:packagegroup-meta-oe-support = "\
     htop \
     hunspell \
     hunspell-dictionaries \
-    hwdata \
     icyque \
-    iksemel \
     imagemagick \
     imapfilter \
     iniparser \
@@ -826,8 +823,8 @@ RDEPENDS:packagegroup-meta-oe-support = "\
     lvm2 \
     mailcap \
     mbuffer \
+    media-types \
     mg \
-    mime-support \
     minini \
     monit \
     mscgen \
@@ -839,17 +836,15 @@ RDEPENDS:packagegroup-meta-oe-support = "\
     nss \
     numactl \
     onig \
-    openct \
     opencv \
     openldap \
     opensc \
     p910nd \
-    pcp \
     pcsc-lite \
     pcsc-tools \
     picocom \
     pidgin \
-    ${@bb.utils.contains("DISTRO_FEATURES", "x11", "pidgin-otr", "", d)} \
+    ${@bb.utils.contains("DISTRO_FEATURES", "x11", "pcp pidgin-otr", "", d)} \
     pidgin-sipe \
     pngcheck \
     poco \
@@ -865,7 +860,6 @@ RDEPENDS:packagegroup-meta-oe-support = "\
     rdfind \
     re2 \
     read-edid \
-    remmina \
     rsnapshot \
     sassc \
     satyr \
@@ -879,9 +873,8 @@ RDEPENDS:packagegroup-meta-oe-support = "\
     srecord \
     ssiapi \
     stm32flash \
-    ${@bb.utils.contains("DISTRO_FEATURES", "x11", "synergy", "", d)} \
+    ${@bb.utils.contains("DISTRO_FEATURES", "x11", "remmina synergy", "", d)} \
     syslog-ng \
-    system-config-keyboard \
     tbb \
     thin-provisioning-tools \
     tokyocabinet \
@@ -954,7 +947,6 @@ RDEPENDS:packagegroup-meta-oe-ptest-packages = "\
     minicoredumper-ptest \
     oprofile-ptest \
     poco-ptest \
-    protobuf-ptest \
     psqlodbc-ptest \
     rsyslog-ptest \
     uthash-ptest \
@@ -981,7 +973,7 @@ RDEPENDS:packagegroup-meta-oe-fortran-packages = "\
 # opencl-headers sdbus-c++-libsystemd nlohmann-fifo sqlite-orm
 # nlohmann-json exprtk liblightmodbus p8platform gnome-doc-utils-stub
 # glm ttf-mplus xbitmaps ceres-solver cli11 fftw gnulib libeigen ade
-# spdlog span-lite uthash websocketpp catch2 properties-cpp cpp-netlib
+# spdlog span-lite uthash websocketpp catch2 cpp-netlib
 
 # rsyslog conflicts with syslog-ng so its not included here
 

@@ -18,6 +18,8 @@ SRC_URI = "git://github.com/lm-sensors/lm-sensors.git;protocol=https;branch=mast
 "
 SRCREV = "1667b850a1ce38151dae17156276f981be6fb557"
 
+UPSTREAM_CHECK_GITTAGREGEX = "V(?P<pver>\d+(-\d+)+)"
+
 inherit update-rc.d systemd
 
 RDEPENDS:${PN}-dev = ""
@@ -44,20 +46,19 @@ SYSTEMD_SERVICE:${PN}-fancontrol = "fancontrol.service"
 SYSTEMD_SERVICE:${PN}-sensord = "sensord.service"
 SYSTEMD_AUTO_ENABLE = "disable"
 
-S = "${WORKDIR}/git"
 
 EXTRA_OEMAKE = 'EXLDFLAGS="${LDFLAGS}" \
         MACHINE=${TARGET_ARCH} PREFIX=${prefix} MANDIR=${mandir} \
         LIBDIR=${libdir} \
-        CC="${CC}" AR="${AR}"'
+        CC="${CC}" AR="${AR}" \
+        PROG_EXTRA="sensors ${PACKAGECONFIG_CONFARGS}"'
 
 do_compile() {
-    sed -i -e 's:^# \(PROG_EXTRA\):\1:' ${S}/Makefile
     # Respect LDFLAGS
     sed -i -e 's/\$(LIBDIR)$/\$(LIBDIR) \$(LDFLAGS)/g' ${S}/Makefile
     sed -i -e 's/\$(LIBSHSONAME) -o/$(LIBSHSONAME) \$(LDFLAGS) -o/g' \
                 ${S}/lib/Module.mk
-    oe_runmake user PROG_EXTRA="sensors ${PACKAGECONFIG_CONFARGS}"
+    oe_runmake user
 }
 
 do_install() {

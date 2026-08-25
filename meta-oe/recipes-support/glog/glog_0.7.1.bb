@@ -12,8 +12,6 @@ SRC_URI = " \
 
 SRCREV = "7b134a5c82c0c0b5698bb6bf7a835b230c5638e4"
 
-S = "${WORKDIR}/git"
-
 inherit cmake
 
 PACKAGECONFIG ?= "shared unwind 64bit-atomics"
@@ -40,3 +38,5 @@ do_configure:append() {
 }
 
 FILES:${PN}-dev += "${datadir}/${BPN}/cmake"
+
+BBCLASSEXTEND = "native"

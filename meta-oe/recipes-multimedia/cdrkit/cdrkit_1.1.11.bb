@@ -14,18 +14,20 @@ SRC_URI = "${DEBIAN_MIRROR}/main/c/${BPN}/${BPN}_${PV}.orig.tar.gz \
            file://0001-add-new-option-eltorito-platform.patch \
            file://0001-genisoimage-Add-checksum.h-and-md5.h-for-function-pr.patch \
            file://fix-incompatible-pointer-type-error.patch \
+           file://0003-allow-build-with-cmake-4.patch \
            "
 SRC_URI:append:class-nativesdk = " \
            file://0001-install-netscsid-to-bin-for-nativesdk.patch \
 "
-SRC_URI[md5sum] = "efe08e2f3ca478486037b053acd512e9"
 SRC_URI[sha256sum] = "d1c030756ecc182defee9fe885638c1785d35a2c2a297b4604c0e0dcc78e47da"
 
 inherit cmake
 
 DEPENDS = "libcap file bzip2"
-RDEPENDS:dirsplit = "perl"
 
+EXTRA_OECMAKE = "-DCMAKE_SKIP_BUILD_RPATH=ON"
+
+RDEPENDS:dirsplit = "perl"
 RDEPENDS:${PN}-dev = ""
 
 PACKAGES =+ "dirsplit genisoimage icedax wodim"

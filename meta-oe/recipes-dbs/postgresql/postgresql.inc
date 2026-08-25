@@ -19,7 +19,7 @@ DESCRIPTION = "\
 "
 HOMEPAGE = "http://www.postgresql.com"
 LICENSE = "0BSD"
-DEPENDS = "libnsl2 tzcode-native perl"
+DEPENDS = "libnsl2 tzcode-native perl bison-native"
 
 ARM_INSTRUCTION_SET = "arm"
 
@@ -29,6 +29,7 @@ SRC_URI = "https://ftp.postgresql.org/pub/source/v${PV}/${BP}.tar.bz2 \
     file://postgresql.pam \
     file://postgresql-setup \
     file://postgresql.service \
+    file://run-ptest \
 "
 
 LEAD_SONAME = "libpq.so"
@@ -37,7 +38,7 @@ LEAD_SONAME = "libpq.so"
 export LDFLAGS_SL = "${LDFLAGS}"
 export LDFLAGS_EX_BE = "-Wl,--export-dynamic"
 
-inherit autotools pkgconfig perlnative python3native python3targetconfig useradd update-rc.d systemd gettext perl-version multilib_header
+inherit autotools pkgconfig perlnative python3native python3targetconfig useradd update-rc.d systemd gettext perl-version multilib_header ptest
 
 CFLAGS += "-I${STAGING_INCDIR}/${PYTHON_DIR}"
 
@@ -73,11 +74,11 @@ PACKAGECONFIG[openssl] = "--with-ssl=openssl,ac_cv_file__dev_urandom=yes,openssl
 PACKAGECONFIG[icu] = "--with-icu,--without-icu,icu,icu"
 PACKAGECONFIG[readline] = "--with-readline,--without-readline,readline"
 
-EXTRA_OECONF += "--enable-thread-safety --disable-rpath \
+EXTRA_OECONF += "--disable-rpath \
     --datadir=${datadir}/${BPN} \
     --sysconfdir=${sysconfdir}/${BPN} \
 "
-EXTRA_OECONF:sh4 += "--disable-spinlocks"
+EXTRA_OECONF:append:sh4 = " --disable-spinlocks"
 
 DEBUG_OPTIMIZATION:remove:mips = " -Og"
 DEBUG_OPTIMIZATION:append:mips = " -O"
@@ -133,6 +134,8 @@ def is_target(d):
 export PERLCONFIGTARGET = "${@is_target(d)}"
 export PERL_ARCHLIB = "${STAGING_LIBDIR}${PERL_OWN_DIR}/perl5/${@get_perl_version(d)}/${@get_perl_arch(d)}"
 
+EXTRA_AUTORECONF += "-I config"
+
 do_configure() {
     # do_configure
     autotools_do_configure
@@ -175,7 +178,51 @@ do_configure() {
 
 do_compile:append() {
     oe_runmake -C contrib all
+
+    for f in `find ${B} -name "*.[c|h]"`;
+    do
+        sed -i -e 's,${B}/../,,' $f
+    done
 }
+
+do_compile_ptest() {
+    oe_runmake -C src/test/regress all
+}
+
+do_install_ptest() {
+    mkdir -p ${D}${PTEST_PATH}/test
+
+    # Install pg_regress binary
+    install -m 0755 ${B}/src/test/regress/pg_regress ${D}${PTEST_PATH}/test/
+
+    # Install test schedules and resultmap
+    for f in parallel_schedule serial_schedule resultmap; do
+        [ -f ${S}/src/test/regress/$f ] && install -m 0644 ${S}/src/test/regress/$f ${D}${PTEST_PATH}/test/
+    done
+
+    # Install SQL, expected, input, output, and data files
+    for d in sql expected input output data; do
+        if [ -d ${S}/src/test/regress/$d ]; then
+            cp -r ${S}/src/test/regress/$d ${D}${PTEST_PATH}/test/
+        fi
+    done
+
+    # Install the regress test shared library into the standard PostgreSQL
+    # package library directory (PKGLIBDIR) alongside contrib modules such
+    # as autoinc.so and refint.so. This allows pg_regress --dlpath to
+    # resolve all required shared libraries from a single location.
+    install -d ${D}${libdir}/${BPN}
+    install -m 0755 ${B}/src/test/regress/regress.so ${D}${libdir}/${BPN}/
+
+    # Install run-ptest
+    install -m 0755 ${UNPACKDIR}/run-ptest ${D}${PTEST_PATH}/
+
+    # Set ownership to postgres user for running tests
+    chown -R postgres:postgres ${D}${PTEST_PATH}
+}
+
+RDEPENDS:${PN}-ptest += "${PN}-client ${PN}-contrib perl"
+FILES:${PN}-ptest += "${libdir}/${BPN}/regress.so"
 
 # server needs to configure user and group
 usernum = "28"
